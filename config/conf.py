@@ -17,3 +17,5 @@ def get_checked_env(env_name):
 
 BOT_TOKEN = get_checked_env('BOT_TOKEN')
 ADMINS = get_checked_env('ADMINS')
+
+admins_ids = [int(admin_id) for admin_id in ADMINS.split(',')]
