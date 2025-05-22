@@ -15,6 +15,7 @@ def get_checked_env(env_name):
     return str(env)
 
 
+OPENAI_TOKEN = get_checked_env('OPENAI_TOKEN')
 BOT_TOKEN = get_checked_env('BOT_TOKEN')
 ADMINS = get_checked_env('ADMINS')
 

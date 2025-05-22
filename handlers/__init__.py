@@ -3,3 +3,4 @@
 # flake8: noqa
 
 from .start import start_router
+from .food import food_router
