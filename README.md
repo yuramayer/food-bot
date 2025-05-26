@@ -19,5 +19,6 @@
 git clone https://github.com/yuramayer/food-bot.git
 cd food-bot
 git checkout develop
+pip install -r requirements.txt
 python app.py
 ```
