@@ -3,6 +3,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import StateFilter
 from bot_back.gpt_funcs import estimate_nutrition
 from bot_back.processing import process_food_estimation, dict2msg
 from states import NewFoodGPT
@@ -12,7 +13,7 @@ from keyboards.approve_kb import approve_buttons, get_approve_kb
 food_router = Router()
 
 
-@food_router.message(F.text)
+@food_router.message(StateFilter(None), F.text)
 async def check_food(message: Message, state: FSMContext):
     """User sends food, we estimate it"""
     food_message = message.text
@@ -28,7 +29,7 @@ async def check_food(message: Message, state: FSMContext):
         await message.answer(err_message)
         return
 
-    await state.update_date(estimation=checked_estimation)
+    await state.update_data(estimation=checked_estimation)
     msg_d = dict2msg(checked_estimation)
 
     await message.answer(f'Твоя еда:\n\n{msg_d}\n\nВсё верно?',
@@ -46,11 +47,11 @@ async def get_approve(message: Message, state: FSMContext):
     left_b, _ = approve_buttons
 
     if user_message == left_b:
-        message.answer('Жаль. Попробуем ещё раз')
+        await message.answer('Жаль. Попробуем ещё раз')
         await state.clear()
         return
 
-    message.answer('Отлично. Запишем информацию')
+    await message.answer('Отлично. Запишем информацию')
     await state.clear()
 
 
@@ -58,5 +59,5 @@ async def get_approve(message: Message, state: FSMContext):
 async def wrong_approve(message: Message):
     """User sends wrong message - without keyboard"""
 
-    message.answer('Воспользуйся кнопками клавиатуры',
-                   reply_markup=get_approve_kb())
+    await message.answer('Воспользуйся кнопками клавиатуры',
+                         reply_markup=get_approve_kb())
