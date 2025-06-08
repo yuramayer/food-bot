@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from bot_back.gpt_funcs import estimate_nutrition
 from bot_back.processing import process_food_estimation, dict2msg
+from bot_back.cloud import save_food_entry_s3
 from states import NewFoodGPT
 from keyboards.approve_kb import approve_buttons, get_approve_kb
 
@@ -51,8 +52,11 @@ async def get_approve(message: Message, state: FSMContext):
         await state.clear()
         return
 
-    await message.answer('Отлично. Запишем информацию')
+    data = await state.get_data()
+    food_dict = data.get("estimation")
+    save_food_entry_s3(food_dict)
     await state.clear()
+    await message.answer('Отлично. Записали информацию')
 
 
 @food_router.message(NewFoodGPT.approved)

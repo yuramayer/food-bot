@@ -18,7 +18,7 @@ def process_food_estimation(food_est: str, food_name: str) -> tuple:
                    for value in food_dict.values()):
             return None, "GPT вернула словарь с битыми значениями"
 
-        food_dict['еда'] = food_name 
+        food_dict['еда'] = food_name
 
         return food_dict, None
 
