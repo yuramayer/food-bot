@@ -3,7 +3,7 @@
 from ast import literal_eval
 
 
-def process_food_estimation(food_est: str) -> tuple:
+def process_food_estimation(food_est: str, food_name: str) -> tuple:
     """Processing the food estimation from the GPT"""
 
     try:
@@ -18,6 +18,8 @@ def process_food_estimation(food_est: str) -> tuple:
                    for value in food_dict.values()):
             return None, "GPT вернула словарь с битыми значениями"
 
+        food_dict['еда'] = food_name
+
         return food_dict, None
 
     except (ValueError, SyntaxError):
@@ -31,5 +33,5 @@ def process_food_estimation(food_est: str) -> tuple:
 def dict2msg(d: dict) -> str:
     """Get the dictionary & return the string with elems"""
 
-    res = '\n'.join(f'{key}: {value}' for key, value in d.items())
+    res = '\n'.join(f' - {key}: {value}' for key, value in d.items())
     return res
