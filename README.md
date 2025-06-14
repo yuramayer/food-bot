@@ -1,42 +1,24 @@
-# Учёт калорий 🥗 - Разработка
+# Учёт калорий 🥗
 
+Лёгкий Telegram-бот для учёта еды и подсчёта калорий.Add commentMore actions
 
-Здесь ведётся активная разработка бота.
+> ⚠️ **Внимание**: Активная разработка ведётся в ветке **[`develop`](https://github.com/yuramayer/food-bot/tree/develop)**
 
-> Код в `main` может быть устаревшим
+## Что делает бот?
 
-## Деплой
+Бот позволяет:
+- сохранять информацию о съеденной пище
+- подсчитывать калории и нутриенты
+- вести дневник питания через Telegram
 
-Задеплоим ботик на линукс-серваке
+## Установка (пока ручная)
 
-### Пути
-
-- Бот склонирован в директорию: `/opt/food-bot`
-- Системный файл запуска лежит здесь: `/etc/systemd/system/food-bot.service`
-
-### Файл `food-bot.service`
-
-```text
-[Unit]
-Description=Food Bot Python Service
-After=network.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/opt/food-bot
-ExecStart=/opt/food-bot/.venv/bin/python /opt/food-bot/app.py
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### Команды `systemd`
+> Проект в разработке. Готовые инструкции и деплой появятся позже.
 
 ```bash
->>> sudo systemctl daemon-reload
->>> sudo systemctl enable food-bot.service
->>> sudo systemctl start food-bot.service
+git clone https://github.com/yuramayer/food-bot.git
+cd food-bot
+git checkout develop
+pip install -r requirements.txt
+python app.py
 ```
