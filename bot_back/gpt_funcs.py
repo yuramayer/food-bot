@@ -1,7 +1,7 @@
 """OpenAI API functions that are used by bot"""
 
 from openai import OpenAI
-from config.conf import OPENAI_TOKEN
+from config.conf import OPENAI_TOKEN, STAND
 
 client = OpenAI(api_key=OPENAI_TOKEN)
 
@@ -19,6 +19,10 @@ def estimate_nutrition(food_description: str) -> tuple:
         "Результат должен быть в виде словаря.\
             Возвращай именно код, без форматирования"
     )
+
+    if STAND == 'LOCAL':
+        reply = get_test_dict()
+        return reply, None
 
     user_prompt = f"Описание блюда: {food_description}"
 
@@ -39,3 +43,15 @@ def estimate_nutrition(food_description: str) -> tuple:
     except Exception as err:
 
         return None, f'Ошибка на этапе генерации: {err}'
+
+
+def get_test_dict() -> dict:
+    """Returns mocked dict when GPT isn't available"""
+    d = """{
+        'грамм': 0,
+        'калории': 0,
+        'белки': 0,
+        'жиры': 0,
+        'углеводы': 0
+    }"""
+    return d
