@@ -13,8 +13,7 @@ s3 = boto3.client(
         service_name='s3',
         endpoint_url='https://storage.yandexcloud.net',
         region_name='ru-central1',
-        config=Config(signature_version='s3v4',),
-        verify=False
+        config=Config(signature_version='s3v4')
 )
 
 
@@ -38,6 +37,5 @@ def save_food_entry_s3(food_dict: dict):
         Bucket=BUCKET_NAME,
         Key=filename,
         Body=json.dumps(entry,
-                        ensure_ascii=False).encode('utf-8'),
-        ContentType='application/json'
+                        ensure_ascii=False).encode('utf-8')
     )
