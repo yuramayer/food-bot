@@ -1,7 +1,7 @@
 """Check the message if it's food"""
 
 from aiogram import Router, F
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from bot_back.gpt_funcs import estimate_nutrition
@@ -11,11 +11,11 @@ from states import NewFoodGPT
 from keyboards.approve_kb import approve_buttons, get_approve_kb
 
 
-food_router = Router()
+auto_food_router = Router()
 
 
-@food_router.message(StateFilter(None), F.text)
-async def check_food(message: Message, state: FSMContext):
+@auto_food_router.message(StateFilter(None), F.text)
+async def check_auto_food(message: Message, state: FSMContext):
     """User sends food, we estimate it"""
     food_message = message.text
     estimation, err_message = estimate_nutrition(food_message)
@@ -30,8 +30,16 @@ async def check_food(message: Message, state: FSMContext):
         await message.answer(err_message)
         return
 
-    await state.update_data(estimation=checked_estimation)
-    msg_d = dict2msg(checked_estimation)
+    await state.update_data(
+        description=checked_estimation.get('еда'),
+        grams=checked_estimation.get('грамм'),
+        calories=checked_estimation.get('калории'),
+        proteins=checked_estimation.get('белки'),
+        fats=checked_estimation.get('жиры'),
+        carbs=checked_estimation.get('углеводы')
+        )
+    data = await state.get_data()
+    msg_d = dict2msg(data)
 
     await message.answer(f'Твоя еда:\n\n{msg_d}\n\nВсё верно?',
                          reply_markup=get_approve_kb())
@@ -39,8 +47,8 @@ async def check_food(message: Message, state: FSMContext):
     await state.set_state(NewFoodGPT.approved)
 
 
-@food_router.message(NewFoodGPT.approved, F.text.in_(approve_buttons))
-async def get_approve(message: Message, state: FSMContext):
+@auto_food_router.message(NewFoodGPT.approved, F.text.in_(approve_buttons))
+async def get_approve_auto_food(message: Message, state: FSMContext):
     """User approves the dict with food"""
 
     user_message = message.text
@@ -48,19 +56,21 @@ async def get_approve(message: Message, state: FSMContext):
     left_b, _ = approve_buttons
 
     if user_message == left_b:
-        await message.answer('Жаль. Попробуем ещё раз')
+        await message.answer('Сколько грамм ты съел?',
+                             reply_markup=ReplyKeyboardRemove())
+
         await state.clear()
         return
 
-    data = await state.get_data()
-    food_dict = data.get("estimation")
+    food_dict = await state.get_data()
     save_food_entry_s3(food_dict)
     await state.clear()
-    await message.answer('Отлично. Записали информацию')
+    await message.answer('Я сохранил инфу в S3 💫',
+                         reply_markup=ReplyKeyboardRemove())
 
 
-@food_router.message(NewFoodGPT.approved)
-async def wrong_approve(message: Message):
+@auto_food_router.message(NewFoodGPT.approved)
+async def wrong_approve_auto_food(message: Message):
     """User sends wrong message - without keyboard"""
 
     await message.answer('Воспользуйся кнопками клавиатуры',

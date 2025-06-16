@@ -7,5 +7,10 @@ from aiogram.fsm.state import StatesGroup, State
 
 class NewFoodGPT(StatesGroup):
     """New food State: estimates the calories & save it"""
-    estimation = State()
+    description = State()
+    grams = State()
+    calories = State()
+    proteins = State()
+    fats = State()
+    carbs = State()
     approved = State()
