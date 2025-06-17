@@ -1,4 +1,4 @@
-"""Check the message if it's food"""
+"""Estimates the food calories with GPT & saves it"""
 
 from aiogram import Router, F
 from aiogram.types import Message, ReplyKeyboardRemove
