@@ -1,4 +1,4 @@
-"""Check the message if it's food"""
+"""Estimates the food calories with GPT & saves it"""
 
 from aiogram import Router, F
 from aiogram.types import Message, ReplyKeyboardRemove
@@ -7,7 +7,7 @@ from aiogram.filters import StateFilter
 from bot_back.gpt_funcs import estimate_nutrition
 from bot_back.processing import process_food_estimation, dict2msg
 from bot_back.cloud import save_food_entry_s3
-from states import NewFoodGPT
+from states import NewFoodGPT, NewFoodManual
 from keyboards.approve_kb import approve_buttons, get_approve_kb
 
 
@@ -49,7 +49,7 @@ async def check_auto_food(message: Message, state: FSMContext):
 
 @auto_food_router.message(NewFoodGPT.approved, F.text.in_(approve_buttons))
 async def get_approve_auto_food(message: Message, state: FSMContext):
-    """User approves the dict with food"""
+    """User approves the dict with food or goes to the manual saving"""
 
     user_message = message.text
 
@@ -58,8 +58,12 @@ async def get_approve_auto_food(message: Message, state: FSMContext):
     if user_message == left_b:
         await message.answer('Сколько грамм ты съел?',
                              reply_markup=ReplyKeyboardRemove())
-
+        saved_description = await state.get_value('description')
         await state.clear()
+        await state.update_data(
+            description=saved_description
+        )
+        await state.set_state(NewFoodManual.grams)
         return
 
     food_dict = await state.get_data()
