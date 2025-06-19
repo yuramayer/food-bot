@@ -1,6 +1,7 @@
 """Save the food calories by the manual"""
 
 from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from bot_back.processing import dict2msg
@@ -12,9 +13,30 @@ from keyboards.approve_kb import approve_buttons, get_approve_kb
 manual_food_router = Router()
 
 
+@manual_food_router.message(Command('manual'))
+async def start_manual_food(message: Message, state: FSMContext):
+    """User wants to run the saving calories by the hand"""
+    await state.clear()
+    await message.answer('Что ты съел?')
+    await state.set_state(NewFoodManual.description)
+
+
+@manual_food_router.message(NewFoodManual.description)
+async def get_manual_food_desciption(
+        message: Message, state: FSMContext):
+    """Bot saves the description of the food & asks the grams"""
+    user_description = message.text
+
+    await state.update_date(
+        description=user_description
+        )
+    await message.answer('Сколько грамм ты съел?')
+    await state.set_state(NewFoodManual.grams)
+
+
 @manual_food_router.message(NewFoodManual.grams)
 async def save_grams_ask_calos(message: Message, state: FSMContext):
-    """User asks the calories & saves the grams"""
+    """Bot asks the calories & saves the grams"""
 
     user_grams = message.text
 
@@ -27,7 +49,7 @@ async def save_grams_ask_calos(message: Message, state: FSMContext):
 
 @manual_food_router.message(NewFoodManual.calories)
 async def save_calos_ask_proteins(message: Message, state: FSMContext):
-    """User saves the calories & asks the proteins"""
+    """Bot saves the calories & asks the proteins"""
 
     user_calories = message.text
 
@@ -40,7 +62,7 @@ async def save_calos_ask_proteins(message: Message, state: FSMContext):
 
 @manual_food_router.message(NewFoodManual.proteins)
 async def save_proteins_ask_fats(message: Message, state: FSMContext):
-    """User saves the proteins & asks the fats of the food"""
+    """Bot saves the proteins & asks the fats of the food"""
 
     user_proteins = message.text
 
@@ -53,7 +75,7 @@ async def save_proteins_ask_fats(message: Message, state: FSMContext):
 
 @manual_food_router.message(NewFoodManual.fats)
 async def save_fats_ask_carbs(message: Message, state: FSMContext):
-    """User saves the fats & asks the carbs of the food"""
+    """Bot saves the fats & asks the carbs of the food"""
 
     user_fats = message.text
 
@@ -66,7 +88,7 @@ async def save_fats_ask_carbs(message: Message, state: FSMContext):
 
 @manual_food_router.message(NewFoodManual.carbs)
 async def save_carbs_ask_approve(message: Message, state: FSMContext):
-    """User saves the carrbs & repeat all the info"""
+    """Bot saves the carrbs & repeat all the info"""
 
     user_carbs = message.text
 
