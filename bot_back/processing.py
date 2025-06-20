@@ -14,7 +14,7 @@ def process_food_estimation(food_est: str, food_name: str) -> tuple:
         if set(food_dict.keys()) != elem_sets:
             return None, "Словарь от ChatGPT неверного формата"
 
-        if not all(isinstance(value, int) or isinstance(value, float)
+        if not all(isinstance(value, (int, float))
                    for value in food_dict.values()):
             return None, "GPT вернула словарь с битыми значениями"
 
