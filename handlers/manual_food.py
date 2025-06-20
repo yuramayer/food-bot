@@ -27,7 +27,7 @@ async def get_manual_food_desciption(
     """Bot saves the description of the food & asks the grams"""
     user_description = message.text
 
-    await state.update_date(
+    await state.update_data(
         description=user_description
         )
     await message.answer('Сколько грамм ты съел?')
