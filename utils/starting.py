@@ -2,7 +2,7 @@
 
 from bot import bot
 from config.conf import admins_ids
-from bot_back.sched_message import scheduler
+from bot_back.scheduler import scheduler
 
 
 async def on_startup():
