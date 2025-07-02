@@ -3,12 +3,13 @@
 import asyncio
 from bot import bot, dp
 from utils.starting import on_startup
-from handlers import start_admin_router, manual_food_router, auto_food_router
+from handlers import start_admin_router, manual_food_router, \
+    auto_food_router, cancel_router
 
 
 async def main():
     """Bot startup function"""
-    dp.include_routers(start_admin_router,
+    dp.include_routers(start_admin_router, cancel_router,
                        manual_food_router, auto_food_router)
     dp.startup.register(on_startup)
     await bot.delete_webhook(drop_pending_updates=True)
