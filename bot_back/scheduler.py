@@ -16,7 +16,6 @@ scheduler.add_job(
     id='ask_breakfast'
 )
 
-
 scheduler.add_job(
     ask_dinner,
     CronTrigger().from_crontab(

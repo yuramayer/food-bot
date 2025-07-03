@@ -8,10 +8,15 @@ from bot_back.gpt_funcs import estimate_nutrition
 from bot_back.processing import process_food_estimation, dict2msg
 from bot_back.cloud import save_food_entry_s3
 from states import NewFoodGPT, NewFoodManual
+from filters.admin_checker import IsAdmin
+from config.conf import admins_ids
 from keyboards.approve_kb import approve_buttons, get_approve_kb
 
 
 auto_food_router = Router()
+auto_food_router.message.filter(
+    IsAdmin(admins_ids)
+)
 
 
 @auto_food_router.message(StateFilter(None), F.text)

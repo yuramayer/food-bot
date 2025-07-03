@@ -1,14 +1,14 @@
-"""Bot reacts to the command /start"""
+"""Bot reacts to the command /start for the admins"""
 
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
 
-start_router = Router()
+start_admin_router = Router()
 
 
-@start_router.message(Command('start'))
+@start_admin_router.message(Command('start'))
 async def cmd_start(message: Message):
-    """User starts bot"""
+    """Bot says hi to the users"""
     await message.answer('Работает :)')

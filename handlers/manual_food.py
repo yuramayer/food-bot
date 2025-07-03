@@ -7,10 +7,15 @@ from aiogram.fsm.context import FSMContext
 from bot_back.processing import dict2msg
 from bot_back.cloud import save_food_entry_s3
 from states import NewFoodManual
+from filters.admin_checker import IsAdmin
+from config.conf import admins_ids
 from keyboards.approve_kb import approve_buttons, get_approve_kb
 
 
 manual_food_router = Router()
+manual_food_router.message.filter(
+    IsAdmin(admins_ids)
+)
 
 
 @manual_food_router.message(Command('manual'))
